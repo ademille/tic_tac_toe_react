@@ -27,59 +27,41 @@ function Square(props) {
 }
 
 class Board extends Component {
-  constructor(){
-    super();
-    this.state = {
-      squares: Array(9).fill(null),
-      xIsNext: true
-    };
-  }
-
-  handleClick(i) {
-    // Only allow changing the cell if it hasn't been set.
-    const squares = this.state.squares.slice();
-    if (squares[i] || calculateWinner(squares))
-      return;
-
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
-      squares: squares,
-      xIsNext: !this.state.xIsNext
-    });
-  }
-
-  renderSquare(css, i) {
+  renderSquare(i) {
     return (
-      <Square css={css} value={this.state.squares[i]} onClick={() => this.handleClick(i)} />
-    )
+      <Square 
+      css={getCss(this.props.winner, i)}
+      value={this.props.squares[i]} 
+      onClick={() => this.props.onClick(i)} />
+    );
   }
 
   render(){
-    const winner = calculateWinner(this.state.squares);
-    let status;
-    if (winner) {
-      status = 'Player: ' + winner.winner + ' won!';
-    }
-    else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
+    //let row = [];
+    //for (let r = 0; r < 3; r++) {
+    //  for (let c = 0; c < 3; c++) {
+    //    row.push(this.renderSquare(c + r * 3));
+    //  }
+    //  <div className="board-row">
+    //  </div>
+    //}
+
     return(
       <div>
-        <div className="status">{status}</div>
         <div className="board-row">
-          {this.renderSquare(getCss(winner, 0), 0)}
-          {this.renderSquare(getCss(winner, 1), 1)}
-          {this.renderSquare(getCss(winner, 2), 2)}
+          {this.renderSquare(0)}
+          {this.renderSquare(1)}
+          {this.renderSquare(2)}
         </div>
         <div className="board-row">
-          {this.renderSquare(getCss(winner, 3), 3)}
-          {this.renderSquare(getCss(winner, 4), 4)}
-          {this.renderSquare(getCss(winner, 5), 5)}
+          {this.renderSquare(3)}
+          {this.renderSquare(4)}
+          {this.renderSquare(5)}
         </div>
         <div className="board-row">
-          {this.renderSquare(getCss(winner, 6), 6)}
-          {this.renderSquare(getCss(winner, 7), 7)}
-          {this.renderSquare(getCss(winner, 8), 8)}
+          {this.renderSquare(6)}
+          {this.renderSquare(7)}
+          {this.renderSquare(8)}
         </div>
       </div>
     );
@@ -93,19 +75,68 @@ class Game extends Component {
       history: [{
         squares: Array(9).fill(null),
       }],
-      xIsNext: true
+      stepNumber: 0,
+      xIsNext: true,
     };
   }
 
+  handleClick(i) {
+    const history = this.state.history.slice(0, this.state.stepNumber + 1)
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
+    // Only allow changing the cell if it hasn't been set.
+    if (calculateWinner(squares) || squares[i])
+      return;
+
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      history: history.concat([{
+        squares: squares
+      }]),
+      stepNumber : history.length,
+      xIsNext: !this.state.xIsNext,
+    });
+  }
+
+  jumpTo(step) {
+    this.setState({
+      stepNumber: step,
+      xIsNext: (step % 2) ? false: true,
+    });
+  }
+
   render() {
+    const history = this.state.history;
+    const current = history[this.state.stepNumber];
+    const winner = calculateWinner(current.squares);
+
+    const moves = history.map((step, move) => {
+      const desc = move ? 'Move #' + move : 'Game start';
+      return (
+        <li key={move}>
+          <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
+        </li>
+      )
+    })
+    let status;
+    if (winner) {
+      status = 'Player: ' + winner.winner + ' won!';
+    }
+    else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
     return (
       <div className="game">
         <div className="game-board">
-          <Board />
+          <Board 
+          squares={current.squares}
+          onClick={(i) => this.handleClick(i)}
+          winner={winner}
+          />
         </div>
         <div className="game-info">
-          <div>{/* status */}</div>
-          <ol>{/* ToDO */}</ol>
+          <div>{status}</div>
+          <ol>{moves}</ol>
         </div>
       </div>
     );
