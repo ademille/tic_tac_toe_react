@@ -1,22 +1,5 @@
 import React, { Component } from 'react';
-//import logo from './logo.svg';
 import './App.css';
-
-/*
-class Square extends Component {
-  constructor() {
-    super();
-  }
-
-  render() {
-    return (
-      <button className="square" onClick={() => this.props.clickCallback()}>
-        {this.props.value}
-      </button>
-    );
-  }
-}
-*/
 
 function Square(props) {
   return (
@@ -59,28 +42,6 @@ class Board extends Component {
     );
 
     return comp;
-
-    //var board2 = (
-    //  <div>
-    //    <div className="board-row">
-    //      {this.renderSquare(0)}
-    //      {this.renderSquare(1)}
-    //      {this.renderSquare(2)}
-    //    </div>
-    //    <div className="board-row">
-    //      {this.renderSquare(3)}
-    //      {this.renderSquare(4)}
-    //      {this.renderSquare(5)}
-    //    </div>
-    //    <div className="board-row">
-    //      {this.renderSquare(6)}
-    //      {this.renderSquare(7)}
-    //      {this.renderSquare(8)}
-    //    </div>
-    //  </div>
-    //);
-
-    //return board2;
   }
 }
 
@@ -90,6 +51,7 @@ class Game extends Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        movePos: -1 
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -107,7 +69,8 @@ class Game extends Component {
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([{
-        squares: squares
+        squares: squares,
+        movePos: i
       }]),
       stepNumber : history.length,
       xIsNext: !this.state.xIsNext,
@@ -126,11 +89,11 @@ class Game extends Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
-    const moves = history.map((step, move) => {
-      const desc = move ? 'Move #' + move : 'Game start';
+    const moves = history.map((step, i) => {
+      const desc = step.movePos >= 0 ? 'Move (' + (step.movePos % 3 + 1)  + ',' + parseInt(step.movePos/3 + 1) + ')' : 'Game start';
       return (
-        <li key={move}>
-          <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
+        <li key={i}>
+          <a href="#" onClick={() => this.jumpTo(i)}>{desc}</a>
         </li>
       )
     })
