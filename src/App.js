@@ -51,7 +51,7 @@ class Game extends Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
-        movePos: -1 
+        movePos: -1 ,
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -90,10 +90,14 @@ class Game extends Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, i) => {
-      const desc = step.movePos >= 0 ? 'Move (' + (step.movePos % 3 + 1)  + ',' + parseInt(step.movePos/3 + 1) + ')' : 'Game start';
+      const h = history[i];
+      const desc = step.movePos >= 0 ? h.squares[h.movePos] + ' Move (' + (step.movePos % 3 + 1)  + ',' + parseInt(step.movePos/3 + 1, 10) + ')' : 'Game start';
+      const bold = (i === this.state.stepNumber);
       return (
         <li key={i}>
-          <a href="#" onClick={() => this.jumpTo(i)}>{desc}</a>
+          <div className={bold? "move-link" : ""}>
+            <a href="#" onClick={() => this.jumpTo(i)}>{desc}</a>
+          </div>
         </li>
       )
     })

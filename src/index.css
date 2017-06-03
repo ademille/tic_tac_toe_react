@@ -48,6 +48,10 @@ ol, ul {
   width: 34px;
 }
 
+.move-link {
+  font-weight:bold;
+}
+
 
 .square:focus {
   outline: none;
