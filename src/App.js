@@ -55,15 +55,15 @@ class Game extends Component {
       }],
       stepNumber: 0,
       xIsNext: true,
-      baconIsReady: false
+      sortIncreasing: false
     };
   }
 
   handleSortChange(event){
-   // //const checked = event.state.target.checked;
-   // this.setState({
-   //   baconIsReady: false,
-   // });
+   const checked = event.target.checked;
+    this.setState({
+      sortIncreasing: checked
+    });
   }
 
   handleClick(i) {
@@ -93,19 +93,19 @@ class Game extends Component {
   }
 
   render() {
-    const history = this.state.history;
+    const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    const sortIncreasing = this.state.baconIsReady;
 
     const moves = history.map((step, i) => {
-      const h = history[i];
+      const iSort = this.state.sortIncreasing ? i : history.length - i - 1;
+      const h = history[iSort];
       const desc = step.movePos >= 0 ? h.squares[h.movePos] + ' Move (' + (step.movePos % 3 + 1)  + ',' + parseInt(step.movePos/3 + 1, 10) + ')' : 'Game start';
-      const bold = (i === this.state.stepNumber);
+      const bold = (iSort === this.state.stepNumber);
       return (
-        <li key={i}>
+        <li key={iSort}>
           <div className={bold? "move-link" : ""}>
-            <a href="#" onClick={() => this.jumpTo(i)}>{desc}</a>
+            <a href="#" onClick={() => this.jumpTo(iSort)}>{desc}</a>
           </div>
         </li>
       )
@@ -121,10 +121,11 @@ class Game extends Component {
       <div className="game">
         <div className="toggle">
           <Toggle
-            defaultChecked={this.state.baconIsReady}
-            onClick={this.handleSortChange}
+            defaultChecked={this.state.sortIncreasing}
+            onClick={(e) => this.handleSortChange(e)}
+            
             />
-          <label>Sort Moves increasing: {this.state.baconIsReady?"true":"false"}</label>
+          <label>Sort Moves increasing: {this.state.sortIncreasing?"true":"false"}</label>
           <br />
         </div>
         <div className="game-board" >
