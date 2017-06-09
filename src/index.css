@@ -61,9 +61,14 @@ ol, ul {
   background: #ddd;
 }
 
+.toggle {
+  display: flex;
+  flex-direction: column;
+}
+
 .game {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .game-info {

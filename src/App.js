@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import Toggle from 'react-toggle'
 
 function Square(props) {
   return (
@@ -12,10 +12,10 @@ function Square(props) {
 class Board extends Component {
   renderSquare(i) {
     return (
-      <Square 
+      <Square
       key={i}
       css={getCss(this.props.winner, i)}
-      value={this.props.squares[i]} 
+      value={this.props.squares[i]}
       onClick={() => this.props.onClick(i)} />
     );
   }
@@ -55,7 +55,15 @@ class Game extends Component {
       }],
       stepNumber: 0,
       xIsNext: true,
+      baconIsReady: false
     };
+  }
+
+  handleSortChange(event){
+   // //const checked = event.state.target.checked;
+   // this.setState({
+   //   baconIsReady: false,
+   // });
   }
 
   handleClick(i) {
@@ -88,6 +96,7 @@ class Game extends Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
+    const sortIncreasing = this.state.baconIsReady;
 
     const moves = history.map((step, i) => {
       const h = history[i];
@@ -110,8 +119,16 @@ class Game extends Component {
     }
     return (
       <div className="game">
-        <div className="game-board">
-          <Board 
+        <div className="toggle">
+          <Toggle
+            defaultChecked={this.state.baconIsReady}
+            onClick={this.handleSortChange}
+            />
+          <label>Sort Moves increasing: {this.state.baconIsReady?"true":"false"}</label>
+          <br />
+        </div>
+        <div className="game-board" >
+          <Board
           squares={current.squares}
           onClick={(i) => this.handleClick(i)}
           winner={winner}
