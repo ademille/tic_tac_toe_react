@@ -55,7 +55,7 @@ class Game extends Component {
       }],
       stepNumber: 0,
       xIsNext: true,
-      sortIncreasing: false
+      sortIncreasing: true
     };
   }
 
@@ -93,19 +93,21 @@ class Game extends Component {
   }
 
   render() {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[this.state.stepNumber];
+    const current = this.state.history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
-    const moves = history.map((step, i) => {
-      const iSort = this.state.sortIncreasing ? i : history.length - i - 1;
-      const h = history[iSort];
-      const desc = step.movePos >= 0 ? h.squares[h.movePos] + ' Move (' + (step.movePos % 3 + 1)  + ',' + parseInt(step.movePos/3 + 1, 10) + ')' : 'Game start';
-      const bold = (iSort === this.state.stepNumber);
+    //Sort the history in increasing or decreasing order
+    const history = this.state.sortIncreasing ? (this.state.history.slice(0,
+     this.state.history.length)) : (this.state.history.slice(0,
+     this.state.history.length)).reverse();
+
+    const moves = history.map((move, i) => {
+      const desc = move.movePos >= 0 ? move.squares[move.movePos] + ' Move (' + (move.movePos % 3 + 1)  + ',' + parseInt(move.movePos/3 + 1, 10) + ')' : 'Game start';
+      const bold = (current === move);
       return (
-        <li key={iSort}>
+        <li key={i}>
           <div className={bold? "move-link" : ""}>
-            <a href="#" onClick={() => this.jumpTo(iSort)}>{desc}</a>
+            <a href="#" onClick={() => this.jumpTo(this.state.sortIncreasing ? i : history.length - i - 1)}>{desc}</a>
           </div>
         </li>
       )
