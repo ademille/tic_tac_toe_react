@@ -170,7 +170,7 @@ function calculateWinner(squares) {
 
 function getCss(winner, pos) {
   if (winner && (winner.line[0] === pos || winner.line[1] === pos || winner.line[2] === pos))
-      return "winsquare";
+      return "square winsquare";
   else
     return "square";
 }
