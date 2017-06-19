@@ -14,10 +14,6 @@ ol, ul {
   display: table;
 }
 
-.status {
-  margin-bottom: 10px;
-}
-
 .square {
   background: #fff;
   border: 1px solid #999;
@@ -37,6 +33,15 @@ ol, ul {
   background: #0f0;
 }
 
+.losesquare {
+  background: #f00;
+}
+
+.currentsquare {
+  background: cornflowerblue;
+  color: white;
+}
+
 .move-link {
   font-weight:bold;
 }
@@ -50,18 +55,57 @@ ol, ul {
   background: #ddd;
 }
 
-.toggle {
+.game {
+  /*border: 3px solid #999;*/
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
 }
 
-.game {
-  display: flex;
+.game-board {
+  /*border: 1px solid #F00;*/
   flex-direction: column;
 }
 
 .game-info {
-  margin-left: 20px;
+  /*border: 1px solid #0F0;*/
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.status {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  border: 2px solid cadetblue;
+  background-color: cadetblue;
+  color: white;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.toggle {
+  /*border: 1px solid #00F;*/
+  display: flex;
+  margin-left: 1px;
+  margin-right: 1px;
+  margin-top: 10px;
+  /*flex-direction: column;*/
+}
+
+a:link {
+  color: blue;
+  text-decoration: none;
+}
+
+a:visited {
+  color: blue;
+}
+
+a:hover {
+  color: white;
+  background-color: cornflowerblue;
 }
 
 

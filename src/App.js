@@ -14,7 +14,7 @@ class Board extends Component {
     return (
       <Square
       key={i}
-      css={getCss(this.props.winner, i)}
+      css={getCss(this.props.winner, this.props.allSquaresFilled, this.props.movePos, i)}
       value={this.props.squares[i]}
       onClick={() => this.props.onClick(i)} />
     );
@@ -71,7 +71,7 @@ class Game extends Component {
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     // Only allow changing the cell if it hasn't been set.
-    if (calculateWinner(squares) || squares[i])
+    if ((calculateWinner(squares) != null) || squares[i])
       return;
 
     squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -95,6 +95,8 @@ class Game extends Component {
   render() {
     const current = this.state.history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
+    const allSquaresFilled = allFilled(current.squares);
+    const movePos = this.state.history[this.state.stepNumber].movePos;
 
     //Sort the history in increasing or decreasing order
     const history = this.state.sortIncreasing ? (this.state.history.slice(0,
@@ -116,29 +118,34 @@ class Game extends Component {
     if (winner) {
       status = 'Player: ' + winner.winner + ' won!';
     }
+    else if (allSquaresFilled){
+      status = 'No Winner!'
+    }
     else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
     return (
       <div className="game">
-        <div className="toggle">
-          <Toggle
-            defaultChecked={this.state.sortIncreasing}
-            onClick={(e) => this.handleSortChange(e)}
-            
-            />
-          <label>Sort Moves increasing: {this.state.sortIncreasing?"true":"false"}</label>
-          <br />
-        </div>
         <div className="game-board" >
           <Board
           squares={current.squares}
           onClick={(i) => this.handleClick(i)}
           winner={winner}
+          allSquaresFilled={allSquaresFilled}
+          movePos={movePos}
           />
         </div>
         <div className="game-info">
-          <div>{status}</div>
+          <div className="status">
+            {status}
+          </div>
+          <div className="toggle">
+            <label>Sort Moves increasing:&nbsp;</label>
+            <Toggle
+              defaultChecked={this.state.sortIncreasing}
+              onClick={(e) => this.handleSortChange(e)}
+              />
+          </div>
           <ol>{moves}</ol>
         </div>
       </div>
@@ -168,11 +175,31 @@ function calculateWinner(squares) {
   return null;
 }
 
-function getCss(winner, pos) {
+function allFilled(squares) {
+  for (let i = 0; i < squares.length; i++) {
+    if (!squares[i]){
+      //An empty square
+      return false;
+    }
+  }
+  //All squares full
+  return true;
+}
+
+function getCss(winner, allFilled, lastMovePos, pos) {
   if (winner && (winner.line[0] === pos || winner.line[1] === pos || winner.line[2] === pos))
       return "square winsquare";
+  else if (!winner && allFilled && (pos === 0 || pos === 2 || pos === 4 || pos === 6 || pos === 8))
+    return "square losesquare";
   else
-    return "square";
+  {
+    if (lastMovePos === pos && !winner && !allFilled){
+      return "currentsquare square";
+    }
+    else {
+      return "square";
+    }
+  }
 }
 
 export default Game;
